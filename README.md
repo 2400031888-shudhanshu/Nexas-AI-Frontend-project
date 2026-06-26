@@ -85,12 +85,6 @@ python3 -m http.server 8080
 
 The included `.github/workflows/deploy.yml` automatically deploys to GitHub Pages on every push to `main`. No manual steps needed after setup.
 
-### Netlify (One-click)
-
-1. Go to [netlify.com](https://netlify.com)
-2. Drag and drop the project folder onto the Netlify dashboard
-3. Done — live in seconds
-
 ### Vercel
 
 ```bash
@@ -108,10 +102,5 @@ npx vercel
 | Logic | Vanilla JavaScript (ES6+) |
 | Fonts | Google Fonts — Syne + Inter |
 | Icons | Inline SVG |
-| Deploy | GitHub Pages / Netlify / Vercel |
+| Deploy | GitHub Pages /Vercel |
 
----
-
-## 📄 License
-
-MIT — free to use, modify, and deploy.
