@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus AI — Automate Everything</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  font-family:'Inter',sans-serif;
+  background:#050508;
+  color:#E8E6F0;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+
+/* ── CSS Variables ── */
+:root{
+  --font-display:'Syne',sans-serif;
+  --font-body:'Inter',sans-serif;
+
+  /* Brand palette */
+  --violet-50:#F0EEFF;
+  --violet-100:#D9D4FF;
+  --violet-200:#B8ADFF;
+  --violet-400:#8B7BFF;
+  --violet-500:#6C59FF;
+  --violet-600:#5241E8;
+  --violet-700:#3D2EBF;
+  --violet-900:#1A1466;
+
+  --cyan-400:#22D3EE;
+  --cyan-500:#06B6D4;
+  --cyan-600:#0891B2;
+
+  --rose-400:#FB7185;
+  --rose-500:#F43F5E;
+
+  --amber-400:#FBBF24;
+
+  /* Surface */
+  --bg-0:#050508;
+  --bg-1:#0D0D14;
+  --bg-2:#13131E;
+  --bg-3:#1A1A28;
+  --bg-card:#16162280;
+
+  /* Text */
+  --text-primary:#F0EEF8;
+  --text-secondary:#A09CC0;
+  --text-muted:#6B6890;
+
+  /* Border */
+  --border:#2A2840;
+  --border-bright:#3D3A60;
+
+  /* Layout */
+  --max-w:1160px;
+  --radius-sm:6px;
+  --radius:12px;
+  --radius-lg:20px;
+  --radius-xl:28px;
+}
+
+/* ── Typography ── */
+.display{font-family:var(--font-display);font-weight:800;letter-spacing:-0.03em;line-height:1.05}
+.heading{font-family:var(--font-display);font-weight:700;letter-spacing:-0.02em;line-height:1.15}
+.label{font-family:var(--font-body);font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase}
+
+/* ── Layout Utilities ── */
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px}
+.flex{display:flex}
+.grid{display:grid}
+.relative{position:relative}
+.overflow-hidden{overflow:hidden}
+
+/* ── Noise Texture ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-repeat:repeat;
+  background-size:200px 200px;
+  pointer-events:none;
+  z-index:0;
+  opacity:.4;
+}
+
+/* ── Orb Background ── */
+.orb{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(80px);
+  pointer-events:none;
+}
+.orb-violet{background:radial-gradient(circle,#6C59FF33 0%,transparent 70%)}
+.orb-cyan{background:radial-gradient(circle,#22D3EE22 0%,transparent 70%)}
+
+/* ─────────────────────────────────────────
+   NAV
+───────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;
+  z-index:100;
+  background:#05050899;
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:all .3s ease;
+}
+.nav-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 24px;
+  max-width:var(--max-w);margin:0 auto;
+}
+.nav-logo{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--font-display);font-weight:800;font-size:20px;
+  color:var(--text-primary);text-decoration:none;
+}
+.nav-logo svg{width:32px;height:32px}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-links a{
+  font-size:14px;font-weight:500;
+  color:var(--text-secondary);
+  text-decoration:none;
+  transition:color .2s;
+}
+.nav-links a:hover{color:var(--text-primary)}
+.nav-cta{display:flex;align-items:center;gap:12px}
+.btn-ghost{
+  padding:8px 18px;
+  font-size:14px;font-weight:500;
+  color:var(--text-secondary);
+  background:transparent;
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  cursor:pointer;
+  transition:all .2s;
+  font-family:var(--font-body);
+}
+.btn-ghost:hover{color:var(--text-primary);border-color:var(--border-bright)}
+.btn-primary{
+  padding:8px 20px;
+  font-size:14px;font-weight:600;
+  color:#fff;
+  background:var(--violet-500);
+  border:1px solid var(--violet-400);
+  border-radius:var(--radius-sm);
+  cursor:pointer;
+  transition:all .2s;
+  font-family:var(--font-body);
+  text-decoration:none;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.btn-primary:hover{background:var(--violet-600);transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.hamburger{
+  display:none;
+  flex-direction:column;gap:5px;
+  background:none;border:none;cursor:pointer;padding:4px;
+}
+.hamburger span{width:22px;height:2px;background:var(--text-secondary);border-radius:2px;transition:.3s}
+@media(max-width:768px){
+  .nav-links,.nav-cta{display:none}
+  .hamburger{display:flex}
+}
+
+/* ─────────────────────────────────────────
+   HERO
+───────────────────────────────────────── */
+.hero{
+  position:relative;
+  min-height:100vh;
+  display:flex;align-items:center;
+  padding:120px 0 80px;
+  overflow:hidden;
+}
+.hero-orb-1{width:700px;height:700px;top:-200px;right:-200px}
+.hero-orb-2{width:500px;height:500px;bottom:-100px;left:-150px}
+
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 14px 6px 8px;
+  background:#1A1A2880;
+  border:1px solid var(--border-bright);
+  border-radius:100px;
+  font-size:13px;font-weight:500;
+  color:var(--text-secondary);
+  margin-bottom:28px;
+}
+.hero-eyebrow-dot{
+  width:20px;height:20px;
+  background:var(--violet-500);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+.hero-eyebrow-dot svg{width:10px;height:10px}
+
+.hero-headline{
+  font-size:clamp(44px,6vw,84px);
+  font-family:var(--font-display);
+  font-weight:800;
+  letter-spacing:-0.03em;
+  line-height:1.04;
+  margin-bottom:24px;
+  color:var(--text-primary);
+}
+.hero-headline .gradient-text{
+  background:linear-gradient(135deg,var(--violet-400) 0%,var(--cyan-400) 60%,var(--rose-400) 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.hero-sub{
+  font-size:18px;font-weight:400;
+  color:var(--text-secondary);
+  max-width:540px;
+  margin-bottom:40px;
+  line-height:1.7;
+}
+
+.hero-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.btn-hero{
+  padding:14px 28px;
+  font-size:16px;font-weight:600;
+  color:#fff;
+  background:var(--violet-500);
+  border:1px solid var(--violet-400);
+  border-radius:var(--radius);
+  cursor:pointer;
+  font-family:var(--font-body);
+  display:inline-flex;align-items:center;gap:8px;
+  transition:all .25s;
+  text-decoration:none;
+}
+.btn-hero:hover{background:var(--violet-600);transform:translateY(-2px);box-shadow:0 8px 32px #6C59FF40}
+.btn-hero-outline{
+  padding:14px 28px;
+  font-size:16px;font-weight:500;
+  color:var(--text-primary);
+  background:transparent;
+  border:1px solid var(--border-bright);
+  border-radius:var(--radius);
+  cursor:pointer;
+  font-family:var(--font-body);
+  display:inline-flex;align-items:center;gap:8px;
+  transition:all .25s;
+}
+.btn-hero-outline:hover{background:var(--bg-2);border-color:#5241E8}
+
+.hero-stats{
+  display:flex;align-items:center;gap:40px;
+  margin-top:56px;
+  padding-top:40px;
+  border-top:1px solid var(--border);
+}
+.hero-stat-num{
+  font-family:var(--font-display);
+  font-size:28px;font-weight:800;
+  color:var(--text-primary);
+  letter-spacing:-0.03em;
+}
+.hero-stat-label{font-size:13px;color:var(--text-muted)}
+
+/* Hero dashboard mockup */
+.hero-visual{
+  position:relative;
+  flex:0 0 auto;
+}
+.hero-window{
+  width:540px;
+  background:var(--bg-1);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  box-shadow:0 40px 120px #00000080;
+}
+.window-bar{
+  display:flex;align-items:center;gap:8px;
+  padding:14px 16px;
+  background:var(--bg-2);
+  border-bottom:1px solid var(--border);
+}
+.window-dot{width:10px;height:10px;border-radius:50%}
+.window-content{padding:20px;display:flex;flex-direction:column;gap:12px}
+
+/* mini pipeline card */
+.pipeline-card{
+  background:var(--bg-2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px 16px;
+}
+.pipeline-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.pipeline-title{font-size:13px;font-weight:600;color:var(--text-primary)}
+.badge{
+  padding:3px 10px;border-radius:100px;
+  font-size:11px;font-weight:600;
+}
+.badge-green{background:#16a34a22;color:#4ade80;border:1px solid #16a34a44}
+.badge-violet{background:#6C59FF22;color:var(--violet-400);border:1px solid #6C59FF44}
+.badge-amber{background:#f59e0b22;color:var(--amber-400);border:1px solid #f59e0b44}
+
+.pipeline-steps{display:flex;align-items:center;gap:6px}
+.pipe-step{
+  flex:1;height:6px;border-radius:3px;
+  background:var(--bg-3);
+  position:relative;overflow:hidden;
+}
+.pipe-fill{height:100%;border-radius:3px;transition:width 1.5s ease}
+.pipe-fill-full{background:linear-gradient(90deg,var(--violet-500),var(--cyan-500));width:100%}
+.pipe-fill-half{background:linear-gradient(90deg,var(--violet-500),var(--cyan-500));width:62%}
+.pipe-fill-none{width:0}
+
+.metric-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.metric-cell{
+  background:var(--bg-2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:12px;
+}
+.metric-val{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--text-primary)}
+.metric-lbl{font-size:11px;color:var(--text-muted);margin-top:2px}
+.metric-delta{font-size:11px;color:#4ade80;font-weight:500}
+
+/* ── Hero Layout ── */
+.hero-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:60px;
+  align-items:center;
+}
+@media(max-width:1000px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero-visual{display:none}
+}
+
+/* ─────────────────────────────────────────
+   LOGOS
+───────────────────────────────────────── */
+.logos-section{
+  padding:48px 0;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+}
+.logos-label{
+  text-align:center;
+  font-size:12px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--text-muted);
+  margin-bottom:32px;
+  font-weight:600;
+}
+.logos-row{
+  display:flex;align-items:center;justify-content:center;
+  gap:48px;flex-wrap:wrap;
+}
+.logo-item{
+  opacity:.4;
+  filter:grayscale(1);
+  transition:all .2s;
+  font-family:var(--font-display);
+  font-weight:700;font-size:18px;
+  color:var(--text-muted);
+  letter-spacing:-0.02em;
+}
+.logo-item:hover{opacity:.7;filter:grayscale(0)}
+
+/* ─────────────────────────────────────────
+   SECTIONS SHARED
+───────────────────────────────────────── */
+section{position:relative;z-index:1}
+.section-pad{padding:100px 0}
+.section-eyebrow{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--violet-400);
+  margin-bottom:16px;
+}
+.section-headline{
+  font-family:var(--font-display);
+  font-size:clamp(32px,4vw,52px);
+  font-weight:800;
+  letter-spacing:-0.03em;
+  line-height:1.1;
+  color:var(--text-primary);
+  margin-bottom:16px;
+}
+.section-sub{
+  font-size:17px;
+  color:var(--text-secondary);
+  max-width:560px;
+  line-height:1.7;
+}
+
+/* ─────────────────────────────────────────
+   BENTO / ACCORDION FEATURES
+───────────────────────────────────────── */
+#features{padding:100px 0}
+
+.bento-grid{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  grid-template-rows:auto;
+  gap:16px;
+  margin-top:56px;
+}
+
+.bento-card{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:28px;
+  cursor:pointer;
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+  position:relative;
+  overflow:hidden;
+  backdrop-filter:blur(8px);
+}
+.bento-card::before{
+  content:'';
+  position:absolute;inset:0;
+  border-radius:inherit;
+  opacity:0;
+  transition:opacity .3s;
+  border:1px solid var(--violet-400);
+}
+.bento-card.active::before,
+.bento-card:hover::before{opacity:1}
+.bento-card.active,
+.bento-card:hover{
+  background:var(--bg-2);
+  transform:translateY(-3px);
+  box-shadow:0 20px 60px #00000060,0 0 0 1px var(--violet-500)22;
+}
+.bento-card.active .bento-icon{background:var(--violet-500)22}
+
+.bento-card:nth-child(1){grid-column:span 3;grid-row:span 2}
+.bento-card:nth-child(2){grid-column:span 3}
+.bento-card:nth-child(3){grid-column:span 3}
+.bento-card:nth-child(4){grid-column:span 2}
+.bento-card:nth-child(5){grid-column:span 2}
+.bento-card:nth-child(6){grid-column:span 2}
+
+.bento-icon{
+  width:44px;height:44px;
+  border-radius:var(--radius-sm);
+  background:var(--bg-3);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:18px;
+  transition:background .3s;
+}
+.bento-icon svg{width:22px;height:22px}
+.bento-title{
+  font-family:var(--font-display);
+  font-size:18px;font-weight:700;
+  color:var(--text-primary);
+  margin-bottom:8px;
+  letter-spacing:-0.01em;
+}
+.bento-desc{
+  font-size:14px;
+  color:var(--text-secondary);
+  line-height:1.65;
+}
+.bento-visual{
+  margin-top:20px;
+}
+/* Big card extras */
+.bento-card:nth-child(1) .bento-title{font-size:22px}
+
+/* Accordion (mobile) */
+.accordion{display:none}
+.accordion-item{
+  border-bottom:1px solid var(--border);
+  overflow:hidden;
+}
+.accordion-trigger{
+  width:100%;display:flex;align-items:center;justify-content:space-between;
+  padding:20px 0;
+  background:none;border:none;cursor:pointer;
+  font-family:var(--font-body);
+  color:var(--text-primary);
+  text-align:left;
+}
+.accordion-trigger-left{display:flex;align-items:center;gap:14px}
+.accordion-trigger-icon{
+  width:38px;height:38px;
+  border-radius:var(--radius-sm);
+  background:var(--bg-2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.accordion-trigger-icon svg{width:18px;height:18px}
+.accordion-trigger-title{font-size:16px;font-weight:600;color:var(--text-primary)}
+.accordion-arrow{
+  width:28px;height:28px;
+  border:1px solid var(--border);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  transition:transform .3s,border-color .3s;
+}
+.accordion-arrow svg{width:14px;height:14px;color:var(--text-secondary)}
+.accordion-item.open .accordion-arrow{transform:rotate(180deg);border-color:var(--violet-500)}
+.accordion-item.open .accordion-trigger-title{color:var(--violet-400)}
+.accordion-body{
+  max-height:0;overflow:hidden;
+  transition:max-height .4s cubic-bezier(.4,0,.2,1),padding .3s;
+}
+.accordion-item.open .accordion-body{max-height:400px}
+.accordion-body-inner{padding:0 0 20px 52px;font-size:14px;color:var(--text-secondary);line-height:1.7}
+
+@media(max-width:900px){
+  .bento-grid{display:none}
+  .accordion{display:block}
+}
+
+/* ─────────────────────────────────────────
+   MINI VISUALIZATIONS inside bento
+───────────────────────────────────────── */
+.mini-flow{display:flex;align-items:center;gap:8px;margin-top:16px}
+.flow-node{
+  padding:6px 12px;
+  background:var(--bg-3);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  font-size:12px;font-weight:500;
+  color:var(--text-secondary);
+  white-space:nowrap;
+}
+.flow-arrow{color:var(--text-muted);font-size:14px}
+.flow-node.hl{background:var(--violet-500)22;border-color:var(--violet-500)88;color:var(--violet-400)}
+
+.mini-chart{
+  display:flex;align-items:flex-end;gap:5px;
+  height:50px;margin-top:16px;
+}
+.bar{
+  flex:1;border-radius:3px 3px 0 0;
+  background:var(--bg-3);
+  transition:height .5s ease;
+}
+.bar.hl{background:linear-gradient(to top,var(--violet-600),var(--cyan-500))}
+
+.security-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:16px;
+}
+.sec-item{
+  padding:8px;background:var(--bg-3);border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;color:var(--text-secondary);
+}
+.sec-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;flex-shrink:0}
+
+/* ─────────────────────────────────────────
+   PRICING
+───────────────────────────────────────── */
+#pricing{padding:100px 0}
+
+.pricing-controls{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+  gap:16px;margin-top:40px;margin-bottom:48px;
+}
+
+/* Billing toggle */
+.billing-toggle{
+  display:flex;align-items:center;
+  background:var(--bg-1);
+  border:1px solid var(--border);
+  border-radius:100px;
+  padding:4px;
+}
+.billing-btn{
+  padding:8px 20px;
+  border:none;background:transparent;
+  font-family:var(--font-body);font-size:14px;font-weight:500;
+  color:var(--text-muted);
+  border-radius:100px;
+  cursor:pointer;
+  transition:all .2s;
+  position:relative;
+}
+.billing-btn.active{
+  background:var(--violet-500);
+  color:#fff;
+}
+.annual-badge{
+  position:absolute;top:-20px;right:-4px;
+  background:var(--cyan-500);
+  color:#fff;
+  font-size:10px;font-weight:700;
+  padding:2px 7px;border-radius:100px;
+  white-space:nowrap;
+  pointer-events:none;
+}
+
+/* Currency switcher */
+.currency-switcher{
+  display:flex;align-items:center;
+  background:var(--bg-1);
+  border:1px solid var(--border);
+  border-radius:100px;
+  padding:4px;
+  gap:2px;
+}
+.currency-btn{
+  padding:8px 16px;
+  border:none;background:transparent;
+  font-family:var(--font-body);font-size:14px;font-weight:500;
+  color:var(--text-muted);
+  border-radius:100px;
+  cursor:pointer;
+  transition:all .2s;
+}
+.currency-btn.active{
+  background:var(--bg-3);
+  color:var(--text-primary);
+  border:1px solid var(--border-bright);
+}
+
+/* Pricing grid */
+.pricing-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  align-items:start;
+}
+@media(max-width:900px){
+  .pricing-grid{grid-template-columns:1fr}
+}
+
+.pricing-card{
+  background:var(--bg-1);
+  border:1px solid var(--border);
+  border-radius:var(--radius-xl);
+  padding:36px 32px;
+  position:relative;
+  transition:all .3s;
+}
+.pricing-card:hover{
+  transform:translateY(-4px);
+  border-color:var(--border-bright);
+}
+.pricing-card.featured{
+  border:1px solid var(--violet-500)88;
+  background:linear-gradient(180deg,#1A1A3022 0%,var(--bg-1) 100%);
+}
+.pricing-card.featured:hover{
+  border-color:var(--violet-400);
+  box-shadow:0 24px 80px #6C59FF30;
+}
+
+.featured-badge{
+  position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+  background:var(--violet-500);
+  color:#fff;
+  font-size:11px;font-weight:700;letter-spacing:.06em;
+  padding:5px 16px;
+  border-radius:0 0 10px 10px;
+  white-space:nowrap;
+}
+
+.plan-name{
+  font-family:var(--font-display);
+  font-size:22px;font-weight:700;
+  color:var(--text-primary);
+  margin-bottom:6px;
+  letter-spacing:-0.01em;
+}
+.plan-desc{font-size:14px;color:var(--text-muted);margin-bottom:28px}
+
+.plan-price{
+  display:flex;align-items:baseline;gap:4px;
+  margin-bottom:6px;
+}
+.price-currency{
+  font-size:20px;font-weight:600;
+  color:var(--text-secondary);
+  font-family:var(--font-display);
+}
+.price-amount{
+  font-family:var(--font-display);
+  font-size:48px;font-weight:800;
+  color:var(--text-primary);
+  letter-spacing:-0.04em;
+  transition:all .3s;
+}
+.price-period{
+  font-size:14px;color:var(--text-muted);
+  margin-bottom:28px;
+}
+.price-annual-note{
+  font-size:12px;color:var(--cyan-500);
+  margin-bottom:28px;
+  font-weight:500;
+}
+
+.plan-divider{
+  height:1px;background:var(--border);
+  margin:28px 0;
+}
+
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
+.plan-feature{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:14px;color:var(--text-secondary);
+}
+.feature-check{
+  width:18px;height:18px;border-radius:50%;
+  background:var(--violet-500)22;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;
+}
+.feature-check svg{width:10px;height:10px;color:var(--violet-400)}
+
+.plan-cta{
+  width:100%;padding:14px;
+  font-size:15px;font-weight:600;
+  border-radius:var(--radius);
+  cursor:pointer;
+  font-family:var(--font-body);
+  transition:all .25s;
+}
+.cta-outline{
+  background:transparent;
+  color:var(--text-primary);
+  border:1px solid var(--border-bright);
+}
+.cta-outline:hover{background:var(--bg-2);border-color:var(--violet-500)}
+.cta-filled{
+  background:var(--violet-500);
+  color:#fff;
+  border:1px solid var(--violet-400);
+}
+.cta-filled:hover{background:var(--violet-600);box-shadow:0 8px 32px #6C59FF40}
+
+/* ─────────────────────────────────────────
+   SOCIAL PROOF
+───────────────────────────────────────── */
+#testimonials{padding:100px 0}
+.testi-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  margin-top:56px;
+}
+@media(max-width:900px){.testi-grid{grid-template-columns:1fr}}
+@media(max-width:640px){.testi-grid{grid-template-columns:1fr}}
+
+.testi-card{
+  background:var(--bg-1);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:28px;
+  transition:all .3s;
+}
+.testi-card:hover{border-color:var(--border-bright);transform:translateY(-3px)}
+.testi-stars{display:flex;gap:4px;margin-bottom:16px}
+.star{width:14px;height:14px;color:var(--amber-400)}
+.testi-quote{
+  font-size:15px;color:var(--text-secondary);
+  line-height:1.7;margin-bottom:24px;
+  font-style:italic;
+}
+.testi-author{display:flex;align-items:center;gap:12px}
+.testi-avatar{
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:13px;font-weight:800;
+}
+.avatar-a{background:linear-gradient(135deg,var(--violet-500),var(--cyan-500));color:#fff}
+.avatar-b{background:linear-gradient(135deg,var(--rose-500),var(--amber-400));color:#fff}
+.avatar-c{background:linear-gradient(135deg,var(--cyan-600),var(--violet-500));color:#fff}
+.avatar-d{background:linear-gradient(135deg,var(--amber-400),var(--rose-400));color:#fff}
+.avatar-e{background:linear-gradient(135deg,#22D3EE,#4ade80);color:#fff}
+.avatar-f{background:linear-gradient(135deg,var(--violet-700),var(--rose-500));color:#fff}
+.testi-name{font-size:14px;font-weight:600;color:var(--text-primary)}
+.testi-role{font-size:12px;color:var(--text-muted)}
+
+/* ─────────────────────────────────────────
+   CTA BANNER
+───────────────────────────────────────── */
+.cta-section{
+  padding:100px 0;
+  position:relative;overflow:hidden;
+}
+.cta-inner{
+  background:linear-gradient(135deg,var(--violet-700) 0%,#3D2EBF 50%,#1A1466 100%);
+  border:1px solid var(--violet-400)44;
+  border-radius:var(--radius-xl);
+  padding:72px 60px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.cta-headline{
+  font-family:var(--font-display);
+  font-size:clamp(32px,4vw,52px);
+  font-weight:800;
+  color:#fff;
+  letter-spacing:-0.03em;
+  margin-bottom:16px;
+}
+.cta-sub{font-size:18px;color:#D9D4FF;margin-bottom:40px;max-width:500px;margin-left:auto;margin-right:auto}
+.cta-actions{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+.btn-white{
+  padding:14px 28px;
+  font-size:16px;font-weight:600;
+  background:#fff;color:var(--violet-700);
+  border:none;border-radius:var(--radius);
+  cursor:pointer;font-family:var(--font-body);
+  transition:all .25s;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.btn-white:hover{background:#F0EEFF;transform:translateY(-2px)}
+.btn-transparent{
+  padding:14px 28px;
+  font-size:16px;font-weight:500;
+  background:transparent;
+  color:#D9D4FF;
+  border:1px solid #ffffff44;
+  border-radius:var(--radius);
+  cursor:pointer;font-family:var(--font-body);
+  transition:all .25s;
+}
+.btn-transparent:hover{background:#ffffff11;border-color:#ffffff88}
+
+/* ─────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────── */
+footer{
+  padding:64px 0 40px;
+  border-top:1px solid var(--border);
+}
+.footer-grid{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:48px;
+  margin-bottom:56px;
+}
+@media(max-width:768px){.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.footer-grid{grid-template-columns:1fr}}
+.footer-brand{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.footer-brand-name{
+  font-family:var(--font-display);font-weight:800;font-size:18px;
+  color:var(--text-primary);
+}
+.footer-brand-desc{font-size:14px;color:var(--text-muted);line-height:1.6;max-width:260px}
+.footer-col-title{
+  font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text-muted);margin-bottom:16px;
+}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:10px}
+.footer-links a{font-size:14px;color:var(--text-secondary);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--text-primary)}
+.footer-bottom{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:24px;border-top:1px solid var(--border);
+  flex-wrap:wrap;gap:12px;
+}
+.footer-copy{font-size:13px;color:var(--text-muted)}
+.footer-legal{display:flex;gap:20px}
+.footer-legal a{font-size:13px;color:var(--text-muted);text-decoration:none;transition:color .2s}
+.footer-legal a:hover{color:var(--text-secondary)}
+
+/* ─────────────────────────────────────────
+   UTILITY / ANIMATION
+───────────────────────────────────────── */
+.fade-up{
+  opacity:0;transform:translateY(24px);
+  transition:opacity .6s ease,transform .6s ease;
+}
+.fade-up.visible{opacity:1;transform:none}
+
+/* Pricing price change animation */
+.price-amount.animating{
+  opacity:0;transform:translateY(-8px);
+}
+
+/* Scroll indicator */
+.scroll-indicator{
+  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  opacity:.5;
+}
+.scroll-indicator span{font-size:11px;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase}
+.scroll-mouse{
+  width:22px;height:34px;border:2px solid var(--text-muted);border-radius:11px;
+  position:relative;
+}
+.scroll-wheel{
+  width:3px;height:6px;background:var(--text-muted);border-radius:2px;
+  position:absolute;top:5px;left:50%;transform:translateX(-50%);
+  animation:scroll-wheel 1.5s infinite ease-in-out;
+}
+@keyframes scroll-wheel{
+  0%{opacity:1;transform:translateX(-50%) translateY(0)}
+  100%{opacity:0;transform:translateX(-50%) translateY(14px)}
+}
+
+/* Glow ring behind featured card */
+.pricing-card.featured::after{
+  content:'';
+  position:absolute;inset:-1px;
+  border-radius:inherit;
+  background:linear-gradient(135deg,var(--violet-400)33,transparent 50%,var(--cyan-400)22);
+  pointer-events:none;
+  z-index:-1;
+}
+
+/* Context transfer toast */
+.context-toast{
+  position:fixed;bottom:24px;right:24px;
+  background:var(--bg-2);
+  border:1px solid var(--violet-500);
+  border-radius:var(--radius);
+  padding:12px 18px;
+  font-size:13px;color:var(--text-primary);
+  display:flex;align-items:center;gap:8px;
+  transform:translateY(80px);opacity:0;
+  transition:all .4s cubic-bezier(.4,0,.2,1);
+  z-index:200;
+}
+.context-toast.show{transform:translateY(0);opacity:1}
+.toast-dot{width:8px;height:8px;border-radius:50%;background:var(--violet-400);flex-shrink:0}
+
+/* Responsive */
+@media(max-width:640px){
+  .hero-stats{gap:24px;flex-wrap:wrap}
+  .pricing-controls{flex-direction:column}
+  .cta-inner{padding:48px 28px}
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="8" fill="#6C59FF"/>
+        <path d="M8 16L14 10L20 16L14 22L8 16Z" fill="white" opacity="0.9"/>
+        <path d="M14 10L20 16L26 10L20 4L14 10Z" fill="white" opacity="0.6"/>
+        <path d="M14 22L20 16L26 22L20 28L14 22Z" fill="white" opacity="0.4"/>
+      </svg>
+      Nexus AI
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#testimonials">Customers</a>
+      <a href="#">Docs</a>
+    </div>
+    <div class="nav-cta">
+      <button class="btn-ghost">Log in</button>
+      <a href="#pricing" class="btn-primary">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L13 7L7 13M1 7H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Get started free
+      </a>
+    </div>
+    <button class="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="orb orb-violet hero-orb-1" style="width:700px;height:700px;top:-200px;right:-100px"></div>
+  <div class="orb orb-cyan hero-orb-2" style="width:500px;height:500px;bottom:-100px;left:-100px"></div>
+
+  <div class="container" style="width:100%;position:relative;z-index:1">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow">
+          <span class="hero-eyebrow-dot">
+            <svg viewBox="0 0 10 10" fill="none"><path d="M5 1V5L7.5 7.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </span>
+          Now with real-time agent orchestration
+        </div>
+        <h1 class="hero-headline fade-up">
+          Automate<br>
+          <span class="gradient-text">any workflow.</span><br>
+          At any scale.
+        </h1>
+        <p class="hero-sub fade-up" style="transition-delay:.1s">
+          Nexus AI connects your tools, models, and data into intelligent pipelines that run 24/7—without writing a single line of infrastructure code.
+        </p>
+        <div class="hero-actions fade-up" style="transition-delay:.2s">
+          <a href="#pricing" class="btn-hero">
+            Start automating free
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <button class="btn-hero-outline">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.3"/><path d="M6.5 5.5L11 8L6.5 10.5V5.5Z" fill="currentColor"/></svg>
+            See it in action
+          </button>
+        </div>
+        <div class="hero-stats fade-up" style="transition-delay:.3s">
+          <div>
+            <div class="hero-stat-num">12M+</div>
+            <div class="hero-stat-label">Automations run daily</div>
+          </div>
+          <div style="width:1px;background:var(--border);height:40px"></div>
+          <div>
+            <div class="hero-stat-num">99.98%</div>
+            <div class="hero-stat-label">Uptime SLA</div>
+          </div>
+          <div style="width:1px;background:var(--border);height:40px"></div>
+          <div>
+            <div class="hero-stat-num">4,200+</div>
+            <div class="hero-stat-label">Companies trust Nexus</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard mockup -->
+      <div class="hero-visual fade-up" style="transition-delay:.15s">
+        <div class="hero-window">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F56"></div>
+            <div class="window-dot" style="background:#FFBD2E"></div>
+            <div class="window-dot" style="background:#27C93F"></div>
+            <span style="font-size:12px;color:var(--text-muted);margin-left:8px">Nexus Dashboard — Production</span>
+          </div>
+          <div class="window-content">
+            <!-- Pipeline 1 -->
+            <div class="pipeline-card">
+              <div class="pipeline-header">
+                <span class="pipeline-title">Lead → CRM → Slack</span>
+                <span class="badge badge-green">● Running</span>
+              </div>
+              <div class="pipeline-steps">
+                <div class="pipe-step"><div class="pipe-fill pipe-fill-full"></div></div>
+                <div class="pipe-step"><div class="pipe-fill pipe-fill-full"></div></div>
+                <div class="pipe-step"><div class="pipe-fill pipe-fill-full"></div></div>
+              </div>
+            </div>
+            <!-- Pipeline 2 -->
+            <div class="pipeline-card">
+              <div class="pipeline-header">
+                <span class="pipeline-title">Invoice AI Extraction</span>
+                <span class="badge badge-violet">● Processing</span>
+              </div>
+              <div class="pipeline-steps">
+                <div class="pipe-step"><div class="pipe-fill pipe-fill-full"></div></div>
+                <div class="pipe-step"><div class="pipe-fill pipe-fill-half"></div></div>
+                <div class="pipe-step"><div class="pipe-fill pipe-fill-none"></div></div>
+              </div>
+            </div>
+            <!-- Metrics -->
+            <div class="metric-row">
+              <div class="metric-cell">
+                <div class="metric-val">48.2k</div>
+                <div class="metric-lbl">Tasks today</div>
+                <div class="metric-delta">↑ 12.4%</div>
+              </div>
+              <div class="metric-cell">
+                <div class="metric-val">1.2s</div>
+                <div class="metric-lbl">Avg latency</div>
+                <div class="metric-delta">↓ 0.3s</div>
+              </div>
+              <div class="metric-cell">
+                <div class="metric-val">$0.003</div>
+                <div class="metric-lbl">Cost/run</div>
+                <div class="metric-delta">↓ 18%</div>
+              </div>
+            </div>
+            <!-- Mini chart -->
+            <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px">
+              <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">Automations (last 7 days)</div>
+              <div class="mini-chart">
+                <div class="bar hl" style="height:40%"></div>
+                <div class="bar hl" style="height:60%"></div>
+                <div class="bar hl" style="height:45%"></div>
+                <div class="bar hl" style="height:80%"></div>
+                <div class="bar hl" style="height:65%"></div>
+                <div class="bar hl" style="height:90%"></div>
+                <div class="bar" style="height:95%;background:var(--violet-500)44;border:1px dashed var(--violet-500)88"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Floating notification -->
+        <div style="position:absolute;bottom:-16px;right:-16px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;display:flex;align-items:center;gap:10px;backdrop-filter:blur(10px)">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#4ade80,#22D3EE);display:flex;align-items:center;justify-content:center">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 3.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--text-primary)">Pipeline completed</div>
+            <div style="font-size:11px;color:var(--text-muted)">847 leads processed · just now</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ── LOGOS ── -->
+<div class="logos-section" style="position:relative;z-index:1">
+  <div class="container">
+    <p class="logos-label">Trusted by teams at</p>
+    <div class="logos-row">
+      <span class="logo-item">Stripe</span>
+      <span class="logo-item">Vercel</span>
+      <span class="logo-item">Linear</span>
+      <span class="logo-item">Figma</span>
+      <span class="logo-item">Notion</span>
+      <span class="logo-item">Loom</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── FEATURES ── -->
+<section id="features">
+  <div class="container">
+    <div class="fade-up">
+      <span class="section-eyebrow">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="1" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M4 6L5.5 7.5L8 4.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Platform capabilities
+      </span>
+      <h2 class="section-headline">Built for the workflows<br>your team actually runs</h2>
+      <p class="section-sub">Every node in your automation graph is a first-class, observable unit—not a black box.</p>
+    </div>
+
+    <!-- BENTO GRID (desktop) -->
+    <div class="bento-grid" id="bento-grid">
+
+      <!-- Card 0: Agent Orchestration (big) -->
+      <div class="bento-card" data-index="0">
+        <div class="bento-icon">
+          <svg viewBox="0 0 22 22" fill="none" stroke="var(--violet-400)" stroke-width="1.5" stroke-linecap="round">
+            <circle cx="11" cy="5" r="2.5"/>
+            <circle cx="4" cy="17" r="2.5"/>
+            <circle cx="18" cy="17" r="2.5"/>
+            <path d="M11 7.5V12M11 12L4 14.5M11 12L18 14.5"/>
+          </svg>
+        </div>
+        <div class="bento-title">Agent Orchestration</div>
+        <div class="bento-desc">Compose chains of AI agents that reason, delegate, and execute complex multi-step tasks autonomously. Define roles, set constraints, and let Nexus handle coordination.</div>
+        <div class="mini-flow bento-visual" style="flex-wrap:wrap">
+          <span class="flow-node hl">Intake Agent</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node hl">Classifier</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node">Summarizer</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node">Notifier</span>
+        </div>
+        <div style="margin-top:20px;padding:14px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-sm)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:12px;color:var(--text-muted)">Agent run · 2.1s</span>
+            <span class="badge badge-green" style="font-size:10px">Complete</span>
+          </div>
+          <div style="font-size:12px;color:var(--text-secondary);font-family:monospace;line-height:1.6">
+            <span style="color:var(--violet-400)">→</span> Parsed 3 docs<br>
+            <span style="color:var(--cyan-400)">→</span> Category: support_billing<br>
+            <span style="color:#4ade80">✓</span> Routed to finance-team
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 1: Visual Pipeline Builder -->
+      <div class="bento-card" data-index="1">
+        <div class="bento-icon">
+          <svg viewBox="0 0 22 22" fill="none" stroke="var(--cyan-400)" stroke-width="1.5" stroke-linecap="round">
+            <rect x="2" y="8" width="6" height="6" rx="1.5"/>
+            <rect x="14" y="8" width="6" height="6" rx="1.5"/>
+            <path d="M8 11H14"/>
+          </svg>
+        </div>
+        <div class="bento-title">Visual Pipeline Builder</div>
+        <div class="bento-desc">Drag, connect, and deploy automations in a canvas—no YAML, no glue code. Supports branching logic and parallel execution.</div>
+        <div style="margin-top:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+          <div style="padding:8px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:11px;color:var(--cyan-400);text-align:center">Trigger</div>
+          <div style="padding:8px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:11px;color:var(--text-muted);text-align:center">Filter</div>
+          <div style="padding:8px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:11px;color:var(--text-muted);text-align:center">Transform</div>
+          <div style="padding:8px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:11px;color:#4ade80;text-align:center">Send</div>
+        </div>
+      </div>
+
+      <!-- Card 2: Real-Time Observability -->
+      <div class="bento-card" data-index="2">
+        <div class="bento-icon">
+          <svg viewBox="0 0 22 22" fill="none" stroke="var(--rose-400)" stroke-width="1.5" stroke-linecap="round">
+            <path d="M3 15L7 9L11 12L15 6L19 10"/>
+            <circle cx="7" cy="9" r="1.5" fill="var(--rose-400)" stroke="none"/>
+            <circle cx="15" cy="6" r="1.5" fill="var(--rose-400)" stroke="none"/>
+          </svg>
+        </div>
+        <div class="bento-title">Real-Time Observability</div>
+        <div class="bento-desc">Every step is logged, traced, and diffed. Replay any run, pin anomalies, and alert before failures cascade.</div>
+        <div class="mini-chart bento-visual" style="height:42px">
+          <div class="bar hl" style="height:30%"></div>
+          <div class="bar hl" style="height:50%"></div>
+          <div class="bar hl" style="height:80%"></div>
+          <div class="bar hl" style="height:60%"></div>
+          <div class="bar" style="height:20%;background:#F4375522"></div>
+          <div class="bar hl" style="height:90%"></div>
+          <div class="bar hl" style="height:70%"></div>
+        </div>
+      </div>
+
+      <!-- Card 3: 500+ Integrations -->
+      <div class="bento-card" data-index="3">
+        <div class="bento-icon">
+          <svg viewBox="0 0 22 22" fill="none" stroke="var(--amber-400)" stroke-width="1.5" stroke-linecap="round">
+            <path d="M11 3V7M11 15V19M3 11H7M15 11H19"/>
+            <circle cx="11" cy="11" r="3.5"/>
+          </svg>
+        </div>
+        <div class="bento-title">500+ Integrations</div>
+        <div class="bento-desc">Native connectors for every SaaS your team relies on—with OAuth, webhooks, and Nexus MCP bridges.</div>
+      </div>
+
+      <!-- Card 4: Enterprise Security -->
+      <div class="bento-card" data-index="4">
+        <div class="bento-icon">
+          <svg viewBox="0 0 22 22" fill="none" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round">
+            <path d="M11 2L4 5V11C4 15.5 7 19.5 11 21C15 19.5 18 15.5 18 11V5L11 2Z"/>
+          </svg>
+        </div>
+        <div class="bento-title">Enterprise Security</div>
+        <div class="bento-desc">SOC 2 Type II, GDPR, and HIPAA compliant. All data encrypted at rest and in transit.</div>
+        <div class="security-grid bento-visual">
+          <div class="sec-item"><div class="sec-dot"></div>SOC 2</div>
+          <div class="sec-item"><div class="sec-dot"></div>GDPR</div>
+          <div class="sec-item"><div class="sec-dot"></div>HIPAA</div>
+        </div>
+      </div>
+
+      <!-- Card 5: Custom Models -->
+      <div class="bento-card" data-index="5">
+        <div class="bento-icon">
+          <svg viewBox="0 0 22 22" fill="none" stroke="var(--violet-400)" stroke-width="1.5" stroke-linecap="round">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="12" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="3" y="12" width="7" height="7" rx="1.5"/>
+            <rect x="12" y="12" width="7" height="7" rx="1.5"/>
+          </svg>
+        </div>
+        <div class="bento-title">Bring Your Model</div>
+        <div class="bento-desc">Plug in GPT-4o, Claude, Gemini, or your own fine-tuned model. Switch providers mid-pipeline without rewiring.</div>
+      </div>
+
+    </div><!-- /bento-grid -->
+
+    <!-- ACCORDION (mobile) -->
+    <div class="accordion" id="accordion">
+      <!-- Items injected by JS -->
+    </div>
+
+  </div>
+</section>
+
+<!-- ── PRICING ── -->
+<section id="pricing">
+  <div class="container">
+    <div class="fade-up" style="text-align:center">
+      <span class="section-eyebrow" style="justify-content:center">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1L7.5 4.5L11 5L8.5 7.5L9 11L6 9.5L3 11L3.5 7.5L1 5L4.5 4.5L6 1Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+        Transparent pricing
+      </span>
+      <h2 class="section-headline">Simple plans,<br>serious power</h2>
+      <p class="section-sub" style="margin:0 auto">Pay only for what you run. Scale up or down instantly—no contracts, no surprise bills.</p>
+    </div>
+
+    <!-- Controls -->
+    <div class="pricing-controls fade-up" style="transition-delay:.1s">
+      <!-- Billing toggle -->
+      <div class="billing-toggle" role="group" aria-label="Billing period">
+        <button class="billing-btn active" id="btn-monthly" onclick="setBilling('monthly')">Monthly</button>
+        <button class="billing-btn" id="btn-annual" onclick="setBilling('annual')" style="position:relative">
+          Annual
+          <span class="annual-badge">Save 20%</span>
+        </button>
+      </div>
+
+      <!-- Currency switcher -->
+      <div class="currency-switcher" role="group" aria-label="Currency">
+        <button class="currency-btn active" id="btn-usd" onclick="setCurrency('USD')">$ USD</button>
+        <button class="currency-btn" id="btn-inr" onclick="setCurrency('INR')">₹ INR</button>
+        <button class="currency-btn" id="btn-eur" onclick="setCurrency('EUR')">€ EUR</button>
+      </div>
+    </div>
+
+    <!-- Pricing cards -->
+    <div class="pricing-grid fade-up" style="transition-delay:.2s">
+
+      <!-- Starter -->
+      <div class="pricing-card">
+        <div class="plan-name">Starter</div>
+        <div class="plan-desc">For individuals and small side projects.</div>
+        <div class="plan-price">
+          <span class="price-currency" id="cur-0"></span>
+          <span class="price-amount" id="price-0">0</span>
+        </div>
+        <div class="price-period" id="period-0">/month</div>
+        <div class="price-annual-note" id="annual-note-0" style="display:none"></div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li class="plan-feature">
+            <span class="feature-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            500 automation runs / month
+          </li>
+          <li class="plan-feature">
+            <span class="feature-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            3 active pipelines
+          </li>
+          <li class="plan-feature">
+            <span class="feature-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            Community integrations
+          </li>
+          <li class="plan-feature">
+            <span class="feature-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            7-day run history
+          </li>
+        </ul>
+        <button class="plan-cta cta-outline">Start for free</button>
+      </div>
+
+      <!-- Pro (featured) -->
+      <div class="pricing-card featured">
+        <div class="featured-badge">Most popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-desc">For growing teams that need reliability.</div>
+        <div class="plan-price">
+          <span class="price-currency" id="cur-1"></span>
+          <span class="price-amount" id="price-1">49</span>
+        </div>
+        <div class="price-period" id="period-1">/month per workspace</div>
+        <div class="price-annual-note" id="annual-note-1" style="display:none"></div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li class="plan-feature">
+            <span class="feature-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            50,000 runs / month
+          </li>
+          <li class="plan-feature">
+            <span class="feature-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            Unlimited pipelines
+          </li>
+          <li class="plan-feature">
+            <span class="feature-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            500+ native integrations
+          </li>
+          <li class="plan-feature">
+            <span class="feature-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            AI agent nodes
+          </li>
+          <li class="plan-feature">
+            <span class="feature-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            30-day run history
+          </li>
+          <li class="plan-feature">
+            <span class="feature-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            Priority email support
+          </li>
+        </ul>
+        <button class="plan-cta cta-filled">Get started</button>
+      </div>
+
+      <!-- Scale -->
+      <div class="pricing-card">
+        <div class="plan-name">Scale</div>
+        <div class="plan-desc">For enterprises demanding maximum control.</div>
+        <div class="plan-price">
+          <span class="price-currency" id="cur-2"></span>
+          <span class="price-amount" id="price-2">199</span>
+        </div>
+        <div class="price-period" id="period-2">/month per workspace</div>
+        <div class="price-annual-note" id="annual-note-2" style="display:none"></div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li class="plan-feature">
+            <span class="feature-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            Unlimited runs
+          </li>
+          <li class="plan-feature">
+            <span class="feature-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            Custom model deployment
+          </li>
+          <li class="plan-feature">
+            <span class="feature-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            SSO + SCIM
+          </li>
+          <li class="plan-feature">
+            <span class="feature-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            Dedicated VPC option
+          </li>
+          <li class="plan-feature">
+            <span class="feature-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            90-day audit log
+          </li>
+          <li class="plan-feature">
+            <span class="feature-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            SLA + dedicated Slack
+          </li>
+        </ul>
+        <button class="plan-cta cta-outline">Contact sales</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ── -->
+<section id="testimonials">
+  <div class="container">
+    <div class="fade-up" style="text-align:center">
+      <span class="section-eyebrow" style="justify-content:center">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1L7.5 4.5L11 5L8.5 7.5L9 11L6 9.5L3 11L3.5 7.5L1 5L4.5 4.5L6 1Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+        Customer stories
+      </span>
+      <h2 class="section-headline">Teams shipping 10x faster</h2>
+      <p class="section-sub" style="margin:0 auto">Real teams. Real automations. Real time saved.</p>
+    </div>
+
+    <div class="testi-grid fade-up" style="transition-delay:.1s">
+
+      <div class="testi-card">
+        <div class="testi-stars">
+          <svg class="star" viewBox="0 0 14 14" fill="currentColor"><path d="M7 1l1.5 3.5L12 5l-2.5 2.5.5 3.5L7 9.5 4 11l.5-3.5L2 5l3.5-.5L7 1Z"/></svg>
+          <svg class="star" viewBox="0 0 14 14" fill="currentColor"><path d="M7 1l1.5 3.5L12 5l-2.5 2.5.5 3.5L7 9.5 4 11l.5-3.5L2 5l3.5-.5L7 1Z"/></svg>
+          <svg class="star" viewBox="0 0 14 14" fill="currentColor"><path d="M7 1l1.5 3.5L12 5l-2.5 2.5.5 3.5L7 9.5 4 11l.5-3.5L2 5l3.5-.5L7 1Z"/></svg>
+          <svg class="star" viewBox="0 0 14 14" fill="currentColor"><path d="M7 1l1.5 3.5L12 5l-2.5 2.5.5 3.5L7 9.5 4 11l.5-3.5L2 5l3.5-.5L7 1Z"/></svg>
+          <svg class="star" viewBox="0 0 14 14" fill="currentColor"><path d="M7 1l1.5 3.5L12 5l-2.5 2.5.5 3.5L7 9.5 4 11l.5-3.5L2 5l3.5-.5L7 1Z"/></svg>
+        </div>
+        <p class="testi-quote">"We replaced three internal services with a single Nexus pipeline. Our infra cost dropped 40% and we shipped the migration in a week."</p>
+        <div class="testi-author">
+          <div class="testi-avatar avatar-a">SR</div>
+          <div>
+            <div class="testi-name">Siddharth Rao</div>
+            <div class="testi-role">CTO, Kargo Finance</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-stars">
+          <svg class="star" viewBox="0 0 14 14" fill="currentColor"><path d="M7 1l1.5 3.5L12 5l-2.5 2.5.5 3.5L7 9.5 4 11l.5-3.5L2 5l3.5-.5L7 1Z"/></svg>
+          <svg class="star" viewBox="0 0 14 14" fill="currentColor"><path d="M7 1l1.5 3.5L12 5l-2.5 2.5.5 3.5L7 9.5 4 11l.5-3.5L2 5l3.5-.5L7 1Z"/></svg>
+          <svg class="star" viewBox="0 0 14 14" fill="currentColor"><path d="M7 1l1.5 3.5L12 5l-2.5 2.5.5 3.5L7 9.5 4 11l.5-3.5L2 5l3.5-.5L7 1Z"/></svg>
+          <svg class="star" viewBox="0 0 14 14" fill="currentColor"><path d="M7 1l1.5 3.5L12 5l-2.5 2.5.5 3.5L7 9.5 4 11l.5-3.5L2 5l3.5-.5L7 1Z"/></svg>
+          <svg class="star" viewBox="0 0 14 14" fill="currentColor"><path d="M7 1l1.5 3.5L12 5l-2.5 2.5.5 3.5L7 9.5 4 11l.5-3.5L2 5l3.5-.5L7 1Z"/></svg>
+        </div>
+        <p class="testi-quote">"The bento UI is deceptively simple—our non-technical ops team built their own invoice processing workflow on day one."</p>
+        <div class="testi-author">
+          <div class="testi-avatar avatar-b">AL</div>
+          <div>
+            <div class="testi-name">Anya Löwenherz</div>
+            <div class="testi-role">Head of Ops, Planck Labs</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-stars">
+          <svg class="star" viewBox="0 0 14 14" fill="currentColor"><path d="M7 1l1.5 3.5L12 5l-2.5 2.5.5 3.5L7 9.5 4 11l.5-3.5L2 5l3.5-.5L7 1Z"/></svg>
+          <svg class="star" viewBox="0 0 14 14" fill="currentColor"><path d="M7 1l1.5 3.5L12 5l-2.5 2.5.5 3.5L7 9.5 4 11l.5-3.5L2 5l3.5-.5L7 1Z"/></svg>
+          <svg class="star" viewBox="0 0 14 14" fill="currentColor"><path d="M7 1l1.5 3.5L12 5l-2.5 2.5.5 3.5L7 9.5 4 11l.5-3.5L2 5l3.5-.5L7 1Z"/></svg>
+          <svg class="star" viewBox="0 0 14 14" fill="currentColor"><path d="M7 1l1.5 3.5L12 5l-2.5 2.5.5 3.5L7 9.5 4 11l.5-3.5L2 5l3.5-.5L7 1Z"/></svg>
+          <svg class="star" viewBox="0 0 14 14" fill="currentColor"><path d="M7 1l1.5 3.5L12 5l-2.5 2.5.5 3.5L7 9.5 4 11l.5-3.5L2 5l3.5-.5L7 1Z"/></svg>
+        </div>
+        <p class="testi-quote">"SOC 2 compliance was non-negotiable for us. Nexus was the only automation platform that cleared our security review on the first pass."</p>
+        <div class="testi-author">
+          <div class="testi-avatar avatar-c">MP</div>
+          <div>
+            <div class="testi-name">Marcus Patel</div>
+            <div class="testi-role">CISO, MediCore Systems</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-inner fade-up">
+      <!-- decorative orbs inside cta -->
+      <div style="position:absolute;width:400px;height:400px;background:radial-gradient(circle,#ffffff08 0%,transparent 70%);top:-100px;left:-100px;border-radius:50%;pointer-events:none"></div>
+      <div style="position:absolute;width:300px;height:300px;background:radial-gradient(circle,#22D3EE11 0%,transparent 70%);bottom:-80px;right:-80px;border-radius:50%;pointer-events:none"></div>
+
+      <h2 class="cta-headline" style="position:relative;z-index:1">Start automating in minutes.<br>Not months.</h2>
+      <p class="cta-sub" style="position:relative;z-index:1">Free forever on Starter. No credit card required. Your first pipeline runs in under 5 minutes.</p>
+      <div class="cta-actions" style="position:relative;z-index:1">
+        <button class="btn-white">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Get started free
+        </button>
+        <button class="btn-transparent">Talk to sales</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#6C59FF"/><path d="M8 16L14 10L20 16L14 22L8 16Z" fill="white" opacity="0.9"/><path d="M14 10L20 16L26 10L20 4L14 10Z" fill="white" opacity="0.6"/><path d="M14 22L20 16L26 22L20 28L14 22Z" fill="white" opacity="0.4"/></svg>
+          <span class="footer-brand-name">Nexus AI</span>
+        </div>
+        <p class="footer-brand-desc">The intelligence layer between your data and decisions. Built for teams that move fast.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Product</div>
+        <ul class="footer-links">
+          <li><a href="#">Features</a></li>
+          <li><a href="#">Integrations</a></li>
+          <li><a href="#">Changelog</a></li>
+          <li><a href="#">Roadmap</a></li>
+          <li><a href="#">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Developers</div>
+        <ul class="footer-links">
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">API Reference</a></li>
+          <li><a href="#">SDK</a></li>
+          <li><a href="#">Status</a></li>
+          <li><a href="#">Open source</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Security</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 Nexus AI, Inc. All rights reserved. · Built by <strong style="color:var(--text-secondary)">Shudhanshu Kumar</strong> · <a href="mailto:shudhanshukumar973@gmail.com" style="color:var(--violet-400);text-decoration:none">shudhanshukumar973@gmail.com</a></span>
+      <div class="footer-legal">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Context transfer toast -->
+<div class="context-toast" id="context-toast">
+  <div class="toast-dot"></div>
+  <span id="toast-msg">Context transferred to accordion</span>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   PRICING MATRIX ENGINE
+═══════════════════════════════════════ */
+const PRICING_MATRIX = {
+  tiers: ['starter','pro','scale'],
+  basePrices: {
+    starter: 0,
+    pro: 49,
+    scale: 199
+  },
+  annualMultiplier: 0.80,
+  regionalTariffs: {
+    USD: { symbol: '$', multiplier: 1.00, locale: 'en-US' },
+    INR: { symbol: '₹', multiplier: 83.5, locale: 'en-IN', roundTo: 100 },
+    EUR: { symbol: '€', multiplier: 0.93, locale: 'de-DE' }
+  }
+};
+
+let currentBilling = 'monthly';
+let currentCurrency = 'USD';
+
+function computePrice(tier, billing, currency) {
+  const base = PRICING_MATRIX.basePrices[tier];
+  if (base === 0) return 0;
+  const afterBilling = billing === 'annual'
+    ? Math.round(base * PRICING_MATRIX.annualMultiplier)
+    : base;
+  const tariff = PRICING_MATRIX.regionalTariffs[currency];
+  let final = afterBilling * tariff.multiplier;
+  if (tariff.roundTo) final = Math.round(final / tariff.roundTo) * tariff.roundTo;
+  else final = Math.round(final);
+  return final;
+}
+
+function animatePrice(el, newVal) {
+  el.classList.add('animating');
+  setTimeout(() => {
+    el.textContent = newVal === 0 ? '0' : newVal.toLocaleString();
+    el.classList.remove('animating');
+  }, 150);
+}
+
+function updatePricing() {
+  const tariff = PRICING_MATRIX.regionalTariffs[currentCurrency];
+  PRICING_MATRIX.tiers.forEach((tier, i) => {
+    const val = computePrice(tier, currentBilling, currentCurrency);
+    const curEl = document.getElementById('cur-' + i);
+    const priceEl = document.getElementById('price-' + i);
+    const periodEl = document.getElementById('period-' + i);
+    const noteEl = document.getElementById('annual-note-' + i);
+
+    curEl.textContent = tariff.symbol;
+    animatePrice(priceEl, val);
+
+    if (tier === 'starter') {
+      periodEl.textContent = 'Free forever';
+      noteEl.style.display = 'none';
+    } else {
+      const periodLabel = currentBilling === 'annual' ? '/month, billed annually' : '/month per workspace';
+      periodEl.textContent = periodLabel;
+      if (currentBilling === 'annual') {
+        const monthly = computePrice(tier, 'monthly', currentCurrency);
+        const saving = monthly - val;
+        noteEl.style.display = 'block';
+        noteEl.textContent = `Save ${tariff.symbol}${saving.toLocaleString()} vs monthly`;
+      } else {
+        noteEl.style.display = 'none';
+      }
+    }
+  });
+}
+
+function setBilling(mode) {
+  currentBilling = mode;
+  document.getElementById('btn-monthly').classList.toggle('active', mode === 'monthly');
+  document.getElementById('btn-annual').classList.toggle('active', mode === 'annual');
+  updatePricing();
+}
+
+function setCurrency(cur) {
+  currentCurrency = cur;
+  ['USD','INR','EUR'].forEach(c => {
+    document.getElementById('btn-' + c.toLowerCase()).classList.toggle('active', c === cur);
+  });
+  updatePricing();
+}
+
+// init
+updatePricing();
+
+
+/* ═══════════════════════════════════════
+   BENTO ↔ ACCORDION + CONTEXT LOCK
+═══════════════════════════════════════ */
+const FEATURE_DATA = [
+  {
+    title: 'Agent Orchestration',
+    desc: 'Compose chains of AI agents that reason, delegate, and execute complex multi-step tasks autonomously. Define roles, set constraints, and let Nexus handle coordination.',
+    icon: `<svg viewBox="0 0 22 22" fill="none" stroke="var(--violet-400)" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="5" r="2.5"/><circle cx="4" cy="17" r="2.5"/><circle cx="18" cy="17" r="2.5"/><path d="M11 7.5V12M11 12L4 14.5M11 12L18 14.5"/></svg>`
+  },
+  {
+    title: 'Visual Pipeline Builder',
+    desc: 'Drag, connect, and deploy automations in a canvas—no YAML, no glue code. Supports branching logic and parallel execution paths.',
+    icon: `<svg viewBox="0 0 22 22" fill="none" stroke="var(--cyan-400)" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="8" width="6" height="6" rx="1.5"/><rect x="14" y="8" width="6" height="6" rx="1.5"/><path d="M8 11H14"/></svg>`
+  },
+  {
+    title: 'Real-Time Observability',
+    desc: 'Every step is logged, traced, and diffed. Replay any run, pin anomalies, and alert before failures cascade downstream.',
+    icon: `<svg viewBox="0 0 22 22" fill="none" stroke="var(--rose-400)" stroke-width="1.5" stroke-linecap="round"><path d="M3 15L7 9L11 12L15 6L19 10"/></svg>`
+  },
+  {
+    title: '500+ Integrations',
+    desc: 'Native connectors for every SaaS your team relies on—with OAuth, webhooks, and Nexus MCP bridges for custom tools.',
+    icon: `<svg viewBox="0 0 22 22" fill="none" stroke="var(--amber-400)" stroke-width="1.5" stroke-linecap="round"><path d="M11 3V7M11 15V19M3 11H7M15 11H19"/><circle cx="11" cy="11" r="3.5"/></svg>`
+  },
+  {
+    title: 'Enterprise Security',
+    desc: 'SOC 2 Type II, GDPR, and HIPAA compliant. All data encrypted at rest and in transit with customer-managed keys.',
+    icon: `<svg viewBox="0 0 22 22" fill="none" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round"><path d="M11 2L4 5V11C4 15.5 7 19.5 11 21C15 19.5 18 15.5 18 11V5L11 2Z"/></svg>`
+  },
+  {
+    title: 'Bring Your Model',
+    desc: 'Plug in GPT-4o, Claude, Gemini, or your own fine-tuned model. Switch providers mid-pipeline without rewiring your logic.',
+    icon: `<svg viewBox="0 0 22 22" fill="none" stroke="var(--violet-400)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="12" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="12" width="7" height="7" rx="1.5"/><rect x="12" y="12" width="7" height="7" rx="1.5"/></svg>`
+  }
+];
+
+let activeIndex = -1; // -1 = none
+const MOBILE_BP = 900;
+
+// Build accordion from feature data
+function buildAccordion() {
+  const acc = document.getElementById('accordion');
+  acc.innerHTML = '';
+  FEATURE_DATA.forEach((f, i) => {
+    const item = document.createElement('div');
+    item.className = 'accordion-item';
+    item.dataset.index = i;
+    item.innerHTML = `
+      <button class="accordion-trigger" onclick="toggleAccordion(${i})" aria-expanded="false" id="acc-btn-${i}">
+        <div class="accordion-trigger-left">
+          <div class="accordion-trigger-icon">${f.icon}</div>
+          <span class="accordion-trigger-title">${f.title}</span>
+        </div>
+        <div class="accordion-arrow">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 5L7 9L11 5"/></svg>
+        </div>
+      </button>
+      <div class="accordion-body" id="acc-body-${i}" role="region" aria-labelledby="acc-btn-${i}">
+        <div class="accordion-body-inner">${f.desc}</div>
+      </div>
+    `;
+    acc.appendChild(item);
+  });
+}
+
+function toggleAccordion(idx, forceOpen = false) {
+  const items = document.querySelectorAll('.accordion-item');
+  items.forEach((item, i) => {
+    const isTarget = i === idx;
+    const shouldOpen = isTarget && (forceOpen || !item.classList.contains('open'));
+    item.classList.toggle('open', shouldOpen);
+    const btn = item.querySelector('.accordion-trigger');
+    if (btn) btn.setAttribute('aria-expanded', shouldOpen);
+  });
+  activeIndex = (document.querySelector(`.accordion-item[data-index="${idx}"].open`)) ? idx : -1;
+}
+
+// Bento hover tracking
+function initBentoTracking() {
+  const cards = document.querySelectorAll('.bento-card');
+  cards.forEach((card, i) => {
+    card.addEventListener('mouseenter', () => {
+      cards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      activeIndex = i;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.classList.remove('active');
+      activeIndex = -1;
+    });
+  });
+}
+
+// Context lock: transfer active index on resize
+let wasMobile = window.innerWidth < MOBILE_BP;
+let resizeTimer;
+
+function handleResize() {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    const isMobile = window.innerWidth < MOBILE_BP;
+    if (isMobile && !wasMobile && activeIndex >= 0) {
+      // Transitioned to mobile with an active bento card
+      toggleAccordion(activeIndex, true);
+      showContextToast(`"${FEATURE_DATA[activeIndex].title}" carried over`);
+    }
+    wasMobile = isMobile;
+  }, 80);
+}
+
+function showContextToast(msg) {
+  const toast = document.getElementById('context-toast');
+  document.getElementById('toast-msg').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// ── Scroll animation observer ──
+const fadeEls = document.querySelectorAll('.fade-up');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+fadeEls.forEach(el => observer.observe(el));
+
+// ── Nav scroll effect ──
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('nav');
+  nav.style.background = window.scrollY > 40 ? '#050508ee' : '#05050899';
+});
+
+// ── Init ──
+buildAccordion();
+initBentoTracking();
+window.addEventListener('resize', handleResize);
+
+// If already mobile on load, open first accordion item
+if (window.innerWidth < MOBILE_BP) {
+  toggleAccordion(0, true);
+}
+</script>
+</body>
+</html>
